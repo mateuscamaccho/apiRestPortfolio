@@ -37,31 +37,30 @@ app.put("/access", (req, res) => {
     var zMes = zero((dataHora.getMonth() + 1));
     var zAno = zero(dataHora.getFullYear())
     var now = zDia + '/' + zMes + '/' + zAno + ' ' + zHora + ':' + zMinuto + ':' + zSegundo
-    
+
     function zero(x) {
         if (x < 10) {
             x = '0' + x;
         }
         return x;
     }
-    
+
     try {
         var file = fs.readFileSync("db/db.txt", 'utf-8');
         const data = JSON.parse(file)
-        var ultimo = data[data.length - 1];
-        var newId = 0;
-        if (ultimo <= 0 || ultimo == undefined || ultimo == null) {
-            newId = 1
-        } else {
-            newId = ultimo.id + 1;
-        }
-        let access = {
-            id: newId,
+
+        var _visitors = data[0].visitors;
+        let newAccess = {
+            visitors: _visitors + 1,
             date: now
-        };
-        data.push(access);
+        }
+
+        data.shift();
+        data.push(newAccess)
+
         fs.writeFile("db/db.txt", JSON.stringify(data), err => { });
-        res.json({ "codigo": 1, "acesso": access })
+        res.json({ "codigo": 1, "acesso": newAccess })
+
     } catch {
         res.json({ "codigo": 0, "mensagem": "Não foi possivel inserir acesso" })
     }
@@ -72,17 +71,15 @@ app.get("/access", (req, res) => {
         var file = fs.readFileSync("db/db.txt", 'utf-8');
         const data = JSON.parse(file)
 
-        let count = data.length
-
-        res.json({ "codigo": 1, "acessos": count  })
+        res.json({ "codigo": 1, "acessos": data[0].visitors })
     } catch {
-        res.json({ "codigo": 0, "mensagem": "Não foi possivel contar os acessos!"})
+        res.json({ "codigo": 0, "mensagem": "Não foi possivel contar os acessos!" })
     }
 })
 
 app.delete("/access", (req, res) => {
     try {
-        fs.writeFile("db/db.txt", '[]', err => { });
+        fs.writeFile("db/db.txt", '[{"visitors":0,"data":""}]', err => { });
         res.json({ "codigo": 1 })
     } catch {
         res.json({ "codigo": 0, "mensagem": "Não foi possivel limpar os acessos" })
