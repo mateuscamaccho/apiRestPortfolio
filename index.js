@@ -71,7 +71,7 @@ app.get("/access", (req, res) => {
         var file = fs.readFileSync("db/db.txt", 'utf-8');
         const data = JSON.parse(file)
 
-        res.json({ "codigo": 1, "acessos": data[0].visitors })
+        res.json({ "codigo": 1, "acessos": data[0].visitors, "data":data[0].date })
     } catch {
         res.json({ "codigo": 0, "mensagem": "Não foi possivel contar os acessos!" })
     }
