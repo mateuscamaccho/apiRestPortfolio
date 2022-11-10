@@ -24,7 +24,7 @@ app.use(express.json())
 const port = process.env.PORT || 3333;
 
 app.get("/", (req, res) => {
-    res.send('Servidor ativo!')
+    res.send('Servidor ativo! Porta:' + port)
 })
 
 
