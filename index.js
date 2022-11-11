@@ -4,6 +4,8 @@ const cors = require('cors');// imporanto biblioteca cors
 
 const app = express();
 
+const db = require("./db")
+
 corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200,
@@ -23,12 +25,14 @@ app.use(express.json())
 
 const port = process.env.PORT || 3333;
 
-app.get("/", (req, res) => {
-    res.send('Servidor ativo! Porta:' + port)
+app.get("/", async (req, res) => {
+
+    res.send("Server online!")
+
 })
 
 
-app.put("/access", (req, res) => {
+app.put("/access", async (req, res) => {
     var dataHora = new Date();
     var zHora = zero(dataHora.getHours());
     var zMinuto = zero(dataHora.getMinutes());
@@ -36,7 +40,7 @@ app.put("/access", (req, res) => {
     var zDia = zero(dataHora.getDate());
     var zMes = zero((dataHora.getMonth() + 1));
     var zAno = zero(dataHora.getFullYear())
-    var now = zDia + '/' + zMes + '/' + zAno + ' ' + zHora + ':' + zMinuto + ':' + zSegundo
+    var now = zAno + '-' + zMes + '/' + zDia + ' ' + zHora + ':' + zMinuto + ':' + zSegundo
 
     function zero(x) {
         if (x < 10) {
@@ -46,45 +50,37 @@ app.put("/access", (req, res) => {
     }
 
     try {
-        var file = fs.readFileSync("db/db.txt", 'utf-8');
-        const data = JSON.parse(file)
+        const result = await db.db_insert({ date: now });
+        const acessos = await db.db_select();
+        res.status(201).json({ mensagem: "Criado com sucesso!", acessos:acessos[0].acessos })
+    } catch {
+    }
 
-        var _visitors = data[0].visitors;
-        let newAccess = {
-            visitors: _visitors + 1,
-            date: now
+})
+
+app.get("/access", async (req, res) => {
+    try {
+        const acessos = await db.db_select();
+        if (acessos.length <= 0) {
+            res.status(204).json({ mensagem: "nenhum resultado encontrado" })
         }
-
-        data.shift();
-        data.push(newAccess)
-
-        fs.writeFile("db/db.txt", JSON.stringify(data), err => { });
-        res.json({ "codigo": 1, "acesso": newAccess })
-
+        res.json(acessos[0]);
     } catch {
-        res.json({ "codigo": 0, "mensagem": "Não foi possivel inserir acesso" })
+        res.status(404).json({ mensagem: "Não foi possivel consultar!" })
     }
 })
 
-app.get("/access", (req, res) => {
-    try {
-        var file = fs.readFileSync("db/db.txt", 'utf-8');
-        const data = JSON.parse(file)
+// app.delete("/access/:id", async (req, res) => {
+//     try {
+//         const result3 = await db.db_delete(req.params.id);
+//         console.log(result3);
+//         const acessos = await db.db_select();
+//         res.json(acessos);
+//     } catch {
+//         res.json({ id: 1 })
+//     }
 
-        res.json({ "codigo": 1, "acessos": data[0].visitors, "data":data[0].date })
-    } catch {
-        res.json({ "codigo": 0, "mensagem": "Não foi possivel contar os acessos!" })
-    }
-})
-
-app.delete("/access", (req, res) => {
-    try {
-        fs.writeFile("db/db.txt", '[{"visitors":0,"data":""}]', err => { });
-        res.json({ "codigo": 1 })
-    } catch {
-        res.json({ "codigo": 0, "mensagem": "Não foi possivel limpar os acessos" })
-    }
-})
+// })
 
 app.listen(port, () => {
     console.log("Servidor Online!")
