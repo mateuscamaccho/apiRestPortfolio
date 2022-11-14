@@ -9,6 +9,7 @@ const db = require("./db")
 corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200,
+    Access-Control-Allow-Origin:'*'
 }
 app.use(cors(corsOptions))
 // fim cors
