@@ -15,6 +15,14 @@ async function db_select() {
     return rows;
 }
 
+async function db_select_show() {
+    const conn = await connect();
+    // const [rows] = await conn.query("SELECT id, DATE_FORMAT (`date`,'%d/%m/%Y às %H:%i:%s') AS `data_formatada` FROM `mateus` order by id desc limit 20 ;");
+    const [rows] = await conn.query("SELECT id,  DATE_FORMAT (DATE_ADD(date, INTERVAL -3 HOUR),'%d/%m/%Y às %H:%i:%s') AS `data_formatada` FROM `mateus` order by id desc limit 20 ;");
+    // const [rows] = await conn.query("SELECT * FROM `mateus` order by id desc limit 20 ;");
+    return rows;
+}
+
 async function db_insert(data){
     const conn = await connect();
     const sql = 'INSERT INTO mateus(date) VALUES (?);';
@@ -35,4 +43,4 @@ async function db_delete(id){
     return await conn.query(sql, [id]);
 }
 
-module.exports = { db_select, db_insert, db_update, db_delete  }
+module.exports = { db_select, db_select_show, db_insert, db_update, db_delete  }

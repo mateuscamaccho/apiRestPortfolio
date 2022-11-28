@@ -70,6 +70,18 @@ app.get("/access", async (req, res) => {
     }
 })
 
+app.get("/show", async (req, res) => {
+    try {
+        const acessos = await db.db_select_show();
+        if (acessos.length <= 0) {
+            res.status(204).json({ mensagem: "nenhum resultado encontrado" })
+        }
+        res.json(acessos);
+    } catch {
+        res.status(404).json({ mensagem: "Não foi possivel consultar!" })
+    }
+})
+
 // app.delete("/access/:id", async (req, res) => {
 //     try {
 //         const result3 = await db.db_delete(req.params.id);
