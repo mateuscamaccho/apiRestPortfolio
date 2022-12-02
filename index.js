@@ -18,9 +18,13 @@ app.use((req, res, next) => {
     express.urlencoded({
         extended: true
     })
+
     res.header("Access-Control-Allow-Origin", "*");
+
     res.header("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE');
+
     app.use(cors());
+    
     next();
 });
 
