@@ -6,19 +6,24 @@ const app = express();
 
 const db = require("./db")
 
-corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200
-}
-app.use(cors(corsOptions))
+// corsOptions = {
+//     origin: '*'
+// }
+
+// app.use(cors(corsOptions))
 // fim cors
 
 //configurando express
-app.use(
+app.use((req, res, next) => {
     express.urlencoded({
         extended: true
     })
-)
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE');
+    app.use(cors());
+    next();
+});
+
 
 app.use(express.json())
 //express
@@ -52,7 +57,7 @@ app.put("/access", async (req, res) => {
     try {
         const result = await db.db_insert({ date: now });
         const acessos = await db.db_select();
-        res.status(201).json({ mensagem: "Criado com sucesso!", acessos:acessos[0].acessos })
+        res.status(201).json({ mensagem: "Criado com sucesso!", acessos: acessos[0].acessos })
     } catch {
     }
 
