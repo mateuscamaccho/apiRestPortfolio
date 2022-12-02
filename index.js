@@ -13,7 +13,7 @@ corsOptions = {
 app.use(cors(corsOptions))
 // fim cors
 
-app.use(express.json())
+app.use(express.json()) 
 //express
 
 const port = process.env.PORT || 3333;
