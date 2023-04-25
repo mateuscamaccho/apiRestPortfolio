@@ -1,5 +1,4 @@
 const express = require("express")
-const fs = require('fs')
 const cors = require('cors');// imporanto biblioteca cors 
 
 const app = express();
@@ -13,10 +12,9 @@ corsOptions = {
 app.use(cors(corsOptions))
 // fim cors
 
-app.use(express.json()) 
+app.use(express.json())
 //express
 
-const port = process.env.PORT || 3333;
 
 app.get("/", async (req, res) => {
 
@@ -86,6 +84,8 @@ app.get("/show", async (req, res) => {
 //     }
 
 // })
+
+const port = process.env.PORT || 3333;
 
 app.listen(port, () => {
     console.log("Servidor Online!")
