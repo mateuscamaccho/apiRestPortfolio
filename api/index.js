@@ -18,7 +18,10 @@ app.use(express.json())
 
 app.get("/", async (req, res) => {
 
-    res.send("Server online!")
+    res.json({
+        cod: "Ok",
+        message: "Server is running!"
+    });
 
 })
 
