@@ -4,9 +4,8 @@
   "description": "apirestful",
   "main": "src/index.ts",
   "scripts": {
-    "start": "tsx watch src/index.ts",
     "dev": "tsx watch src/index.ts",
-    "setup": "tsx src/setup.ts"
+    "vercel-build": "tsx src/setup.ts"
   },
   "author": "mateus camacho",
   "license": "ISC",
