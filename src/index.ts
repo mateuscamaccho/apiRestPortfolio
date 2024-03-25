@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from "cors"
 import { sql } from './database/postgres';
-import postgres from 'postgres';
 
 const app = express()
 app.use(express.json());
@@ -10,7 +9,7 @@ app.use(cors({
 }))
 
 app.get("/", async (req: express.Request, res: express.Response) => {
-    res.json({
+    return res.json({
         cod: "Ok - ts",
         message: "Server is running!"
     });
@@ -20,7 +19,6 @@ app.put("/access", async (req: express.Request, res: express.Response) => {
     try {
         const result = await sql`insert into acessos (code) values ('')
         RETURNING ID`;
-        console.log(result)
         return res.status(201).json({ 
             mensagem: "Criado com sucesso!",
             acessos: result[0].id
