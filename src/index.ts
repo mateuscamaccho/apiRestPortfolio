@@ -26,7 +26,7 @@ app.put("/access", async (req: express.Request, res: express.Response) => {
         RETURNING ID`;
         return res.status(201).json({ 
             mensagem: "Criado com sucesso!",
-            acessos: result[0].id
+            acessos: result[0].id + 800
         })
     } catch (err) {
         return res.status(500).json({ 
