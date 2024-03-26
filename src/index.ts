@@ -8,6 +8,11 @@ app.use(cors({
     origin: "*"
 }))
 
+interface Entries {
+    id:number,
+    data: string
+}
+
 app.get("/", async (req: express.Request, res: express.Response) => {
     return res.json({
         cod: "Ok - ts",
@@ -30,7 +35,6 @@ app.put("/access", async (req: express.Request, res: express.Response) => {
     }
 })
 
-
 app.get("/access", async (req: express.Request, res: express.Response) => {
     try {
         const acessos = await sql`select count(*) as acessos from acessos`;
@@ -45,7 +49,7 @@ app.get("/access", async (req: express.Request, res: express.Response) => {
 
 app.get("/show", async (req, res) => {
     try {
-        const acessos = await sql`SELECT ID, to_char(CREATED_AT, 'DD/MM/YYYY hh24:mm:ss') AS DATA FROM ACESSOS ORDER BY ID DESC LIMIT 20`;
+        const acessos:Entries[] = await sql`SELECT ID, to_char(CREATED_AT, 'DD/MM/YYYY hh24:mm:ss') AS DATA FROM ACESSOS ORDER BY ID DESC LIMIT 20`;
         if (acessos.length <= 0) {
             res.status(204).json({ mensagem: "nenhum resultado encontrado" })
         }
@@ -54,7 +58,6 @@ app.get("/show", async (req, res) => {
         res.status(404).json({ mensagem: "Não foi possivel consultar!" })
     }
 })
-
 
 const port = process.env.PORT || 3333
 app.listen(port, () => {
